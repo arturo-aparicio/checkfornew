@@ -1,5 +1,6 @@
 @Grab(group = 'org.codehaus.groovy.modules.http-builder', module = 'http-builder', version = '0.7.1')
 import groovyx.net.http.RESTClient
+import java.text.SimpleDateFormat
 import org.artifactory.repo.Repositories;
 
 /**
@@ -62,22 +63,26 @@ private def newVersionExists(repoConfig, repoPath) {
     def path = repoPath.getPath()
 
     // Comparison logic goes here
-    def md5Cached = repositories.getFileInfo(repoPath).getChecksumsInfo().getMd5()
+    def createdLocally = repositories.getFileInfo(repoPath).getCreated()
     def client = new RESTClient(remoteURL)
     try {
         def response = client.head path: path
-        def md5Remote = response.headers['Content-MD5']
-        // The remote repository is not sending an MD5 tag
-        if (md5Remote == null) {
+        def lastModified = response.headers['Last-Modified']
+        // The remote repository is not sending a Last-Modified tag
+        if (lastModified == null) {
             // Change to return true if you want to retrieve it even
             // if it has not changed.
             return false
         }
-        // MD5 mismatch - The artifacts are different
-        if (md5Remote != md5Cached)
+		// Get a timestamp
+		SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz")
+		Date d = format.parse(lastModified.getValue().toString())
+		long lastModifiedTimestamp = d.getTime()
+        // The remote resource has been modified after it was originally created. 
+        if (lastModifiedTimestamp > createdLocally)
             return true
     } catch( ex ) {
-        log.info "error"
+        log.error "Error: $ex"
         // Add error handling for a more robust implementation
     }
     return false

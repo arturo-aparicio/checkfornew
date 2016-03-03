@@ -2,7 +2,7 @@
 
 ## What is this?
 
-The checkfornew	plugin is to be used with a set of Artifactory remote repositories. If a requested artifact is in a remote cache, the plugin will check the remote source for changes. In this instance it will use the md5 header, if it detects a change, it will delete the locally cached copy, forcing the request to pull the new version.
+The checkfornew	plugin is to be used with a set of Artifactory remote repositories. If a requested artifact is in a remote cache, the plugin will check the remote source for changes. In this instance it will use the Last-Modified header, if it detects a change, it will delete the locally cached copy, forcing the request to pull the new version.
 
 
 ### Requirements:
@@ -24,4 +24,4 @@ Any user requesting a download should have delete permissions for the repository
 Note the use of log.info will not appear in the artifactory logs unless you [enable](https://www.jfrog.com/confluence/display/RTF/User+Plugins#UserPlugins-ControllingPluginLogLevel) it. Another option would be to use info.error, which will write to the logs even without changing logback.xml.
 
 ### Making changes
-This versions uses the header Content-MD5 but that may not be available or you may prefer to use last-updated or some other mechanism. For this the method `newVersionExists` needs to be updated. 
+This versions uses the header Last-Modified but that may not be available or you may prefer to use MD5 or some other mechanism. For this the method `newVersionExists` needs to be updated. 
