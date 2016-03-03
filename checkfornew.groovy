@@ -74,10 +74,10 @@ private def newVersionExists(repoConfig, repoPath) {
             // if it has not changed.
             return false
         }
-		// Get a timestamp
-		SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz")
-		Date d = format.parse(lastModified.getValue().toString())
-		long lastModifiedTimestamp = d.getTime()
+        // Get a timestamp
+        SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz")
+        Date d = format.parse(lastModified.getValue().toString())
+        long lastModifiedTimestamp = d.getTime()
         // The remote resource has been modified after it was originally created. 
         if (lastModifiedTimestamp > createdLocally)
             return true
