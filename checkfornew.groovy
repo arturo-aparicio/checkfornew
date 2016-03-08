@@ -20,14 +20,18 @@ download {
     def REMOTE = "remote"
 
     beforeDownloadRequest { request, repoPath ->
+		log.debug "new beforeDownloadRequest"
         // Only intercept the download to a specific set of remote repos
         def repoName = repoPath.getRepoKey()
         if (remoteRepoNames.contains(repoName))
         {
+			log.debug "Repository is in list of repos to apply plugin to."
             // Check if the repo path exists, if it does NOT, no need to
             // check for a new version.
-            if (!repositories.exists(repoPath))
+            if (!repositories.exists(repoPath)) {
+				log.debug "Path does not exist - No further processing required."
                 return
+            }
             // Check if the repository is a valid remote repo
             def repoConfig = repositories.getRepositoryConfiguration(repoName)
             if (repoConfig == null) {
@@ -44,6 +48,7 @@ download {
             // delete the current verion
             if (newVersionExists(repoConfig, repoPath))
             {
+				log.debug "Newer version exist, deleting cached artifact."
                 repositories.delete(repoPath)
             }
         }
@@ -70,6 +75,7 @@ private def newVersionExists(repoConfig, repoPath) {
         def lastModified = response.headers['Last-Modified']
         // The remote repository is not sending a Last-Modified tag
         if (lastModified == null) {
+			log.debug "Last-Modified header does not exist!"
             // Change to return true if you want to retrieve it even
             // if it has not changed.
             return false
@@ -78,6 +84,7 @@ private def newVersionExists(repoConfig, repoPath) {
         SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz")
         Date d = format.parse(lastModified.getValue().toString())
         long lastModifiedTimestamp = d.getTime()
+		log.debug "Comparing: lastModifiedTimestamp($lastModifiedTimestamp) > createdLocally($createdLocally)"
         // The remote resource has been modified after it was originally created. 
         if (lastModifiedTimestamp > createdLocally)
             return true

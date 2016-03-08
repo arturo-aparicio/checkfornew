@@ -23,5 +23,10 @@ Any user requesting a download should have delete permissions for the repository
 
 Note the use of log.info will not appear in the artifactory logs unless you [enable](https://www.jfrog.com/confluence/display/RTF/User+Plugins#UserPlugins-ControllingPluginLogLevel) it. Another option would be to use info.error, which will write to the logs even without changing logback.xml.
 
+To enable debug logging, add these lines to your logback.xml:
+<logger name="checkfornew">
+    <level value="debug"/>
+</logger>
+
 ### Making changes
 This versions uses the header Last-Modified but that may not be available or you may prefer to use MD5 or some other mechanism. For this the method `newVersionExists` needs to be updated. 
