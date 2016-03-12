@@ -18,9 +18,9 @@ download {
 
     // Constants
     def REMOTE = "remote"
-	// WARNING - SECURITY IMPLICATIONS
-	// Allows users that don't have the delete permission the ability to delete
-	// the file if it is going to be replaced with a newer version
+    // WARNING - SECURITY IMPLICATIONS
+    // Allows users that don't have the delete permission the ability to delete
+    // the file if it is going to be replaced with a newer version
     def ALLOW_DELETE_WITHOUT_USER_PERMISSION = true
 
     beforeDownloadRequest { request, repoPath ->
@@ -56,7 +56,7 @@ download {
                 if (ALLOW_DELETE_WITHOUT_USER_PERMISSION)
                 {
                     asSystem {
-						log.debug "Performing delete as system."
+                        log.debug "Performing delete as system."
                         repositories.delete(repoPath)
                     }
                 } else {
