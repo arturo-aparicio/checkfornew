@@ -47,7 +47,6 @@ download {
                 log.info "Repository $repoName must be a remote repository."
                 return
             }
-
             // Check if there is a newer version, if there is,
             // delete the current verion
             if (newVersionExists(repoConfig, repoPath))
@@ -79,8 +78,14 @@ private def newVersionExists(repoConfig, repoPath) {
         remoteURL += "/"
     def path = repoPath.getPath()
 
+    def itemInfo = repositories.getItemInfo(repoPath)
+    if (itemInfo.isFolder())
+    {
+        log.info "Path '$path' is a folder - Plugin does not apply - No further processing."
+        return false
+    }
     // Comparison logic goes here
-    def createdLocally = repositories.getFileInfo(repoPath).getCreated()
+    def createdLocally = itemInfo.getCreated()
     def client = new RESTClient(remoteURL)
     try {
         def response = client.head path: path
